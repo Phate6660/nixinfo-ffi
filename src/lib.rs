@@ -9,21 +9,33 @@ use std::ffi::CString;
 
 #[no_mangle]
 pub extern fn cpu_ffi() -> CString {
-    CString::new(cpu().unwrap()).unwrap()
+    CString::new(
+        cpu().unwrap_or_else(|_|
+            "N/A (could not read /proc/cpuinfo)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
 pub extern fn device_ffi() -> CString {
-    CString::new(device().unwrap()).unwrap()
+    CString::new(
+        device().unwrap_or_else(|_|
+            "N/A (could not read /sys/devices/virtual/dmi/id/product_name nor /sys/firmware/devicetree/base/model)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
 pub extern fn distro_ffi() -> CString {
-    CString::new(distro().unwrap()).unwrap()
+    CString::new(
+        distro().unwrap_or_else(|_|
+            "N/A (could not read /bedrock/etc/os-release, /etc/os-release, nor /usr/lib/os-release)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
-pub extern fn editor_ffi() -> CString{
+pub extern fn editor_ffi() -> CString {
     CString::new(env("EDITOR").unwrap()).unwrap()
 }
 
@@ -39,17 +51,29 @@ pub extern fn gpu_ffi() -> CString {
 
 #[no_mangle]
 pub extern fn hostname_ffi() -> CString {
-    CString::new(hostname().unwrap_or("N/A (could not read /etc/hostname)".to_string())).unwrap()
+    CString::new(
+        hostname().unwrap_or_else(|_|
+            "N/A (could not read /etc/hostname)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
 pub extern fn kernel_ffi() -> CString {
-    CString::new(kernel().unwrap()).unwrap()
+    CString::new(
+        kernel().unwrap_or_else(|_|
+            "N/A (could not read /proc/sys/kernel/osrelease)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
 pub extern fn memory_ffi() -> CString {
-    CString::new(memory().unwrap()).unwrap()
+    CString::new(
+        memory().unwrap_or_else(|_|
+            "N/A (could not read /proc/meminfo)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
@@ -67,7 +91,11 @@ pub extern fn packages_ffi(raw_manager: i64) -> CString {
         9 => "xbps",
         _ => "unknown"
     };
-    CString::new(packages(manager).unwrap()).unwrap()
+    CString::new(
+        packages(manager).unwrap_or_else(|_|
+            format!("N/A (could not run {})", manager)
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
@@ -77,12 +105,20 @@ pub extern fn shell_ffi() -> CString {
 
 #[no_mangle]
 pub extern fn terminal_ffi() -> CString {
-    CString::new(terminal().unwrap()).unwrap()
+    CString::new(
+        terminal().unwrap_or_else(|_|
+            "N/A (could not read the appropriate /proc/?/status)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
 pub extern fn uptime_ffi() -> CString {
-    CString::new(uptime().unwrap()).unwrap()
+    CString::new(
+        uptime().unwrap_or_else(|_|
+            "N/A (could not read /proc/uptime)".to_string()
+        )
+    ).unwrap()
 }
 
 #[no_mangle]
@@ -93,7 +129,11 @@ pub extern fn user_ffi() -> CString {
 #[no_mangle]
 pub extern fn music_ffi() -> CString {
     #[cfg(feature = "music")]
-    return CString::new(music().unwrap()).unwrap();
+    return CString::new(
+        music().unwrap_or_else(|_|
+            "N/A (mpd is currently stopped or not running)".to_string()
+        )
+    ).unwrap();
 
     #[cfg(not(feature = "music"))]
     return CString::new(music()).unwrap();
