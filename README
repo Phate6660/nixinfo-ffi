@@ -1,0 +1,4 @@
+### nixinfo-ffi ###
+This library provides an FFI-compatible for nixinfo.
+
+When compiled, you'll find the shared object at target/MODE/deps/libnixinfo_ffi.so.
