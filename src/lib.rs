@@ -5,53 +5,55 @@ use nixinfo::{
     music, packages, terminal,
     uptime};
 
+use std::ffi::CString;
+
 #[no_mangle]
-pub extern fn cpu_ffi() {
-    println!("{}", cpu().unwrap());
+pub extern fn cpu_ffi() -> CString {
+    CString::new(cpu().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn device_ffi() {
-    println!("{}", device().unwrap());
+pub extern fn device_ffi() -> CString {
+    CString::new(device().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn distro_ffi() {
-    println!("{}", distro().unwrap());
+pub extern fn distro_ffi() -> CString {
+    CString::new(distro().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn editor_ffi() {
-    println!("{}", env("EDITOR").unwrap());
+pub extern fn editor_ffi() -> CString{
+    CString::new(env("EDITOR").unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn environment_ffi() {
-    println!("{}", environment().unwrap());
+pub extern fn environment_ffi() -> CString {
+    CString::new(environment().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn gpu_ffi() {
-    println!("{}", gpu().unwrap());
+pub extern fn gpu_ffi() -> CString {
+    CString::new(gpu().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn hostname_ffi() {
-    println!("{}", hostname().unwrap_or("N/A (could not read /etc/hostname)".to_string()));
+pub extern fn hostname_ffi() -> CString {
+    CString::new(hostname().unwrap_or("N/A (could not read /etc/hostname)".to_string())).unwrap()
 }
 
 #[no_mangle]
-pub extern fn kernel_ffi() {
-    println!("{}", kernel().unwrap());
+pub extern fn kernel_ffi() -> CString {
+    CString::new(kernel().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn memory_ffi() {
-    println!("{}", memory().unwrap());
+pub extern fn memory_ffi() -> CString {
+    CString::new(memory().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn packages_ffi(raw_manager: i64) {
+pub extern fn packages_ffi(raw_manager: i64) -> CString {
     let manager = match raw_manager {
         0 => "apk",
         1 => "apt",
@@ -65,34 +67,34 @@ pub extern fn packages_ffi(raw_manager: i64) {
         9 => "xbps",
         _ => "unknown"
     };
-    println!("{}", packages(manager).unwrap());
+    CString::new(packages(manager).unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn shell_ffi() {
-    println!("{}", env("SHELL").unwrap());
+pub extern fn shell_ffi() -> CString {
+    CString::new(env("SHELL").unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn terminal_ffi() {
-    println!("{}", terminal().unwrap());
+pub extern fn terminal_ffi() -> CString {
+    CString::new(terminal().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn uptime_ffi() {
-    println!("{}", uptime().unwrap());
+pub extern fn uptime_ffi() -> CString {
+    CString::new(uptime().unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn user_ffi() {
-    println!("{}", env("USER").unwrap());
+pub extern fn user_ffi() -> CString {
+    CString::new(env("USER").unwrap()).unwrap()
 }
 
 #[no_mangle]
-pub extern fn music_ffi() {
+pub extern fn music_ffi() -> CString {
     #[cfg(feature = "music")]
-    println!("{}", &music().unwrap());
+    return CString::new(music().unwrap()).unwrap();
 
     #[cfg(not(feature = "music"))]
-    println!("{}", music());
+    return CString::new(music()).unwrap();
 }
